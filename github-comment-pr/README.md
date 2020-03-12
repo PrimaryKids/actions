@@ -10,9 +10,11 @@ This action comments on the associated pull request with a provided message.
 
 ## Example usage
 
-```uses: PrimaryKids/actions/github-comment-pr@master
+```
+uses: PrimaryKids/actions/github-comment-pr@master
 with:
-  message: 'This is a new issue comment on my PR!'```
+  message: 'This is a new issue comment on my PR!'
+```
 
 ## Building
 
