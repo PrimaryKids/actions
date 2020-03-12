@@ -1,0 +1,12 @@
+name: 'Comment on Pull Request'
+description: 'Comments on a pull request with provided message'
+inputs:
+  message:
+    description: 'Comment message for pull request'
+    required: true
+  GITHUB_TOKEN:
+    description: 'The token for the repository (automatically created by GitHub)'
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
