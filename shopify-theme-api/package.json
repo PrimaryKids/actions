@@ -1,14 +1,9 @@
 {
-  "name": "publish-shopify-theme",
+  "name": "shopify-theme-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "shopify.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "GitHub Action for interacting with shopify theme API",
+  "main": "index.js",
+  "private": true,
   "dependencies": {
     "@actions/core": "^1.2.3"
   }
