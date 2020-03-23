@@ -40,7 +40,6 @@ async function run(action) {
   }
 }
 
-var action = core.getInput('action')
 if(shopifyStore == '' || apiKey == '' || apiSecret == '' || themeName == '') {
   console.log(`Variable missing:
     must set environment variables for
@@ -58,6 +57,7 @@ if (process.argv.length > 3) {
 
 // First try to set action variable if in GitHub Actions environment
 // else set it from command line argument
+var action = core.getInput('action')
 if (!action) {
   action = process.argv.slice(2);
 }
