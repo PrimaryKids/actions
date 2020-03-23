@@ -6,17 +6,29 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 const themeName = process.env.SHOPIFY_THEME_NAME;
 
-const shopify = new Shopify({
-  shopName: shopifyStore,
-  apiKey: apiKey,
-  password: apiSecret
-});
-
-async function run(action) {
+async function run() {
   try {
+    // First try to set action variable if in GitHub Actions environment
+    var action = core.getInput('action')
+    if (!action) {
+      action = process.argv[2];
+    }
+    if(action && !['get','publish','delete'].includes(action)) {
+      console.log('Usage: node index.js <action>')
+      console.log('Action must be either "get", "publish", or "delete"')
+      console.log('You provided \"'+action+'\"')
+    }
+
+    const shopify = new Shopify({
+      shopName: shopifyStore,
+      apiKey: apiKey,
+      password: apiSecret
+    });
+
     let themes = await shopify.theme.list()
+
     themes.forEach(theme => {
-      if(['get', ''].includes(action)) {
+      if(!action || action === 'get') {
         console.log(theme)
       }
       else if (theme.name === themeName) {
@@ -24,7 +36,7 @@ async function run(action) {
           shopify.theme
             .delete(theme.id)
             .then(
-              (result) => core.debug(result),
+              (result) => console.log(result),
               (err) => console.error(err)
             );
         }
@@ -33,7 +45,7 @@ async function run(action) {
           shopify.theme
             .update(theme.id, params.theme)
             .then(
-              (result) => core.debug(result),
+              (result) => console.log(result),
               (err) => console.error(err)
             );
         }
@@ -44,11 +56,4 @@ async function run(action) {
   }
 }
 
-// First try to set action variable if in GitHub Actions environment
-// else set it from command line argument
-var action = core.getInput('action')
-if (!action) {
-  action = process.argv.slice(2);
-}
-
-run(action)
+run()

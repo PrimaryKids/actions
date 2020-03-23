@@ -6238,7 +6238,7 @@ module.exports = memoize;
 /***/ 590:
 /***/ (function(module) {
 
-module.exports = {"_from":"shopify-api-node","_id":"shopify-api-node@3.3.0","_inBundle":false,"_integrity":"sha512-EMVmwGh2gqcRAi0ToLAj+162fRlDprb2BybeQM4RY3WVq2ZXgKSAyMr77Q1Dt8XufZ3y+JSfrj01VbUajuo5uA==","_location":"/shopify-api-node","_phantomChildren":{},"_requested":{"type":"tag","registry":true,"raw":"shopify-api-node","name":"shopify-api-node","escapedName":"shopify-api-node","rawSpec":"","saveSpec":null,"fetchSpec":"latest"},"_requiredBy":["#USER","/"],"_resolved":"https://registry.npmjs.org/shopify-api-node/-/shopify-api-node-3.3.0.tgz","_shasum":"d612f86a458482c375223c023c498e4d986e14b5","_spec":"shopify-api-node","_where":"/home/mhoyle/Code/actions/shopify-theme-api","author":{"name":"alexandre saiz","email":"a@alexandresaiz.com"},"bugs":{"url":"https://github.com/MONEI/Shopify-api-node/issues"},"bundleDependencies":false,"dependencies":{"got":"^10.1.0","lodash":"^4.17.10","qs":"^6.5.2","stopcock":"^1.0.0"},"deprecated":false,"description":"Shopify API bindings for Node.js","devDependencies":{"chai":"^4.1.2","coveralls":"^3.0.9","eslint":"^6.8.0","eslint-config-prettier":"^6.7.0","eslint-plugin-prettier":"^3.1.2","husky":"^4.2.1","lint-staged":"^10.0.2","mocha":"^7.0.1","nock":"^12.0.2","nyc":"^15.0.0","prettier":"^1.19.1"},"directories":{"test":"test"},"engines":{"node":">=10.0.0"},"files":["resources","mixins","index.js","index.d.ts"],"homepage":"https://github.com/MONEI/Shopify-api-node","keywords":["Shopify","API","Client"],"license":"MIT","main":"index.js","name":"shopify-api-node","repository":{"type":"git","url":"git+https://github.com/MONEI/Shopify-api-node.git"},"scripts":{"lint":"eslint --ignore-path .gitignore . && prettier --check --ignore-path .gitignore \"**/*.{json,md,ts,yaml,yml}\"","test":"npm run lint && nyc --reporter=html --reporter=text mocha","watch":"mocha -w"},"version":"3.3.0"};
+module.exports = {"name":"shopify-api-node","version":"3.3.0","description":"Shopify API bindings for Node.js","main":"index.js","directories":{"test":"test"},"engines":{"node":">=10.0.0"},"files":["resources","mixins","index.js","index.d.ts"],"dependencies":{"got":"^10.1.0","lodash":"^4.17.10","qs":"^6.5.2","stopcock":"^1.0.0"},"devDependencies":{"chai":"^4.1.2","coveralls":"^3.0.9","eslint":"^6.8.0","eslint-config-prettier":"^6.7.0","eslint-plugin-prettier":"^3.1.2","husky":"^4.2.1","lint-staged":"^10.0.2","mocha":"^7.0.1","nock":"^12.0.2","nyc":"^15.0.0","prettier":"^1.19.1"},"scripts":{"test":"npm run lint && nyc --reporter=html --reporter=text mocha","watch":"mocha -w","lint":"eslint --ignore-path .gitignore . && prettier --check --ignore-path .gitignore \"**/*.{json,md,ts,yaml,yml}\""},"repository":"MONEI/Shopify-api-node","keywords":["Shopify","API","Client"],"author":"alexandre saiz <a@alexandresaiz.com>","license":"MIT","bugs":{"url":"https://github.com/MONEI/Shopify-api-node/issues"},"homepage":"https://github.com/MONEI/Shopify-api-node","_resolved":"https://registry.npmjs.org/shopify-api-node/-/shopify-api-node-3.3.0.tgz","_integrity":"sha512-EMVmwGh2gqcRAi0ToLAj+162fRlDprb2BybeQM4RY3WVq2ZXgKSAyMr77Q1Dt8XufZ3y+JSfrj01VbUajuo5uA==","_from":"shopify-api-node@3.3.0"};
 
 /***/ }),
 
@@ -9143,17 +9143,29 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 const themeName = process.env.SHOPIFY_THEME_NAME;
 
-const shopify = new Shopify({
-  shopName: shopifyStore,
-  apiKey: apiKey,
-  password: apiSecret
-});
-
-async function run(action) {
+async function run() {
   try {
+    // First try to set action variable if in GitHub Actions environment
+    var action = core.getInput('action')
+    if (!action) {
+      action = process.argv[2];
+    }
+    if(action && !['get','publish','delete'].includes(action)) {
+      console.log('Usage: node index.js <action>')
+      console.log('Action must be either "get", "publish", or "delete"')
+      console.log('You provided \"'+action+'\"')
+    }
+
+    const shopify = new Shopify({
+      shopName: shopifyStore,
+      apiKey: apiKey,
+      password: apiSecret
+    });
+
     let themes = await shopify.theme.list()
+
     themes.forEach(theme => {
-      if(['get', ''].includes(action)) {
+      if(!action || action === 'get') {
         console.log(theme)
       }
       else if (theme.name === themeName) {
@@ -9161,7 +9173,7 @@ async function run(action) {
           shopify.theme
             .delete(theme.id)
             .then(
-              (result) => core.debug(result),
+              (result) => console.log(result),
               (err) => console.error(err)
             );
         }
@@ -9170,7 +9182,7 @@ async function run(action) {
           shopify.theme
             .update(theme.id, params.theme)
             .then(
-              (result) => core.debug(result),
+              (result) => console.log(result),
               (err) => console.error(err)
             );
         }
@@ -9181,14 +9193,7 @@ async function run(action) {
   }
 }
 
-// First try to set action variable if in GitHub Actions environment
-// else set it from command line argument
-var action = core.getInput('action')
-if (!action) {
-  action = process.argv.slice(2);
-}
-
-run(action)
+run()
 
 
 /***/ }),

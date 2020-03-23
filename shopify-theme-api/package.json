@@ -2,10 +2,13 @@
   "name": "shopify-theme-api",
   "version": "1.0.0",
   "description": "GitHub Action for interacting with shopify theme API",
-  "main": "index.js",
+  "main": "dist/index.js",
   "private": true,
   "dependencies": {
     "@actions/core": "^1.2.3",
     "shopify-api-node": "^3.3.0"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "^0.21.1"
   }
 }
