@@ -1,0 +1,21 @@
+name: 'Interact with Shopify themes'
+description: 'Get, Publish or Delete themes'
+inputs:
+  action:
+    description: 'Action we want to perform, valid values are <get|publish|delete>'
+    required: true
+  SHOPIFY_STORE:
+    description: 'Name of the store whose API we want to interact with.'
+    required: true
+  SHOPIFY_API_KEY:
+    description: 'API_KEY for private app that gives access to themes. Should be set as a secret.'
+    required: true
+  SHOPIFY_API_SECRET:
+    description: 'API_SECRET for private app that gives access to themes. Should be set as a secret.'
+    required: true
+  SHOPIFY_THEME_NAME:
+    description: 'Name of the theme we want to publish or delete. If not set we will just print all themes in the store. In GitHub workflows this will typically be set in the workflow to match a branch name or commit id.'
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
