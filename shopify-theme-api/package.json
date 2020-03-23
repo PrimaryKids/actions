@@ -5,6 +5,7 @@
   "main": "index.js",
   "private": true,
   "dependencies": {
-    "@actions/core": "^1.2.3"
+    "@actions/core": "^1.2.3",
+    "shopify-api-node": "^3.3.0"
   }
 }
