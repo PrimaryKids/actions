@@ -8,6 +8,16 @@ This action can retrieve themes or publish/delete a single theme that is unpubli
 
 **Required** The type of action we want to perform. Can be either 'get', 'publish', or 'delete'
 
+## Outputs
+
+### `themeId`
+
+The value of the theme ID that was published or deleted
+
+### `themeExists`
+
+A boolean that describes if the get action returned a theme or not
+
 ## Example usage
 
 ```

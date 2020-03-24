@@ -16,6 +16,11 @@ inputs:
   SHOPIFY_THEME_NAME:
     description: 'Name of the theme we want to publish or delete. If not set we will just print all themes in the store. In GitHub workflows this will typically be set in the workflow to match a branch name or commit id.'
     required: false
+outputs:
+  themeId:
+    description: 'The id of the theme that corresponds to the SHOPIFY_THEME_NAME input'
+  themeExists:
+    description: 'A boolean describing if the get action returned a theme or not'
 runs:
   using: 'node12'
   main: 'dist/index.js'

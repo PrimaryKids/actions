@@ -1,21 +1,23 @@
 'use strict'
 const Shopify = require('shopify-api-node');
 const core = require('@actions/core');
-const shopifyStore = process.env.SHOPIFY_STORE;
-const apiKey = process.env.SHOPIFY_API_KEY;
-const apiSecret = process.env.SHOPIFY_API_SECRET;
-const themeName = process.env.SHOPIFY_THEME_NAME;
 
 async function run() {
   try {
+    const shopifyStore = process.env.SHOPIFY_STORE;
+    const apiKey = process.env.SHOPIFY_API_KEY;
+    const apiSecret = process.env.SHOPIFY_API_SECRET;
+    const themeName = process.env.SHOPIFY_THEME_NAME;
+    const githubWorkflow = process.env.GITHUB_WORKFLOW;
+
     // First try to set action variable if in GitHub Actions environment
     var action = core.getInput('action')
     if (!action) {
       action = process.argv[2];
     }
-    if(action && !['get','publish','delete'].includes(action)) {
+    if(action && !['get','get-all','publish','delete'].includes(action)) {
       console.log('Usage: node index.js <action>')
-      console.log('Action must be either "get", "publish", or "delete"')
+      console.log('Action must be either "get","get-all", "publish", or "delete"')
       console.log('You provided \"'+action+'\"')
     }
 
@@ -27,12 +29,24 @@ async function run() {
 
     let themes = await shopify.theme.list()
 
+    if(!action || action === 'get-all') {
+      console.log(themes)
+    }
     themes.forEach(theme => {
-      if(!action || action === 'get') {
-        console.log(theme)
-      }
-      else if (theme.name === themeName) {
-        if(action === 'delete') {
+      if (theme.name === themeName) {
+        if (githubWorkflow) core.setOutput('themeId', theme.id);
+        if(action === 'get') {
+          shopify.theme
+            .get(theme.id)
+            .then(
+              (result) => console.log(result),
+              (err) => console.error(err)
+            )
+            .then(function(){
+              if (githubWorkflow) core.setOutput('themeExists', true);
+            });
+        }
+        else if(action === 'delete') {
           shopify.theme
             .delete(theme.id)
             .then(
