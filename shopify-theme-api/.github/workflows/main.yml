@@ -1,0 +1,28 @@
+name: shopify_ci
+on:
+  pull_request:
+    branches:
+    - master
+
+env:
+  SHOPIFY_STORE: primarykids-qa
+  SHOPIFY_API_KEY: ${{ secrets.QA_API_KEY }}
+  SHOPIFY_API_PASS: ${{ secrets.QA_API_PASS }}
+  THEMEKIT_TIMEOUT: 60s
+  SHOPIFY_THEME_NAME: 'Experiment'
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - uses: ./shopify-theme-api
+      id: shopify-get
+      with:
+        action: 'get'
+
+    - run: echo "${{ steps.shopify-get.outputs.themeId }} ${{ steps.shopify-get.outputs.themeExists }}"
+
+    - run: echo "${{join(steps.shopify-get.outputs.*, '\n')}}"
