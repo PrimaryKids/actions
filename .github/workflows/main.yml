@@ -5,9 +5,9 @@ on:
     - master
 
 env:
-  SHOPIFY_STORE: primarykids-qa
-  SHOPIFY_API_KEY: ${{ secrets.QA_API_KEY }}
-  SHOPIFY_API_SECRET: ${{ secrets.QA_API_PASS }}
+  SHOPIFY_STORE: mhoyle-store
+  SHOPIFY_API_KEY: 34f5615db23c3e556f45532432dfaa3c
+  SHOPIFY_API_SECRET: 0ad62e82f84d2c71daf9f98d5ff25e34
   THEMEKIT_TIMEOUT: 60s
   SHOPIFY_THEME_NAME: 'Experiment'
 
