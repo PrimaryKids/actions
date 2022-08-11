@@ -2,7 +2,7 @@
   "name": "lighthouse-datadog-report",
   "version": "1.0.0",
   "description": "Github Action for reporting Lighthouse audit results to Datadog",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
