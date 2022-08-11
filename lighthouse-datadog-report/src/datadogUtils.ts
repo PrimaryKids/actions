@@ -1,8 +1,12 @@
 import * as httpm from '@actions/http-client'
+import * as core from '@actions/core'
 import _get from 'lodash.get'
 import { MetricData, DataPoint, JSReport, NetworkAsset } from './types'
 
 const _http = new httpm.HttpClient('lighthouse-datadog-report')
+const datadogHost = core.getInput('datadog-host', { required: true })
+const datadogApiKey = core.getInput('datadog-api-key', { required: true })
+core.setSecret(datadogApiKey)
 
 const METRIC_SCORE_MAP = {
   // General scores
@@ -22,8 +26,8 @@ const METRIC_SCORE_MAP = {
 }
 
 export const sendMetric = (data: MetricData) => {
-  return _http.postJson(`${process.env.INPUT_DATADOG_HOST}/api/v1/series`, data, {
-    'DD-API-KEY': process.env.INPUT_DATADOG_API_KEY as string,
+  return _http.postJson(`${datadogHost}/api/v1/series`, data, {
+    'DD-API-KEY': datadogApiKey,
   })
 }
 
