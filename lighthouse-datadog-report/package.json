@@ -1,0 +1,24 @@
+{
+  "name": "lighthouse-datadog-report",
+  "version": "1.0.0",
+  "description": "Github Action for reporting Lighthouse audit results to Datadog",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "ncc build --source-map"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.9.1",
+    "@actions/http-client": "^2.0.1",
+    "lodash.get": "^4.4.2"
+  },
+  "devDependencies": {
+    "@types/lodash.get": "^4.4.7",
+    "@types/node": "^18.7.1",
+    "@vercel/ncc": "^0.34.0",
+    "typescript": "^4.7.4"
+  }
+}
