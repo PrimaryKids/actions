@@ -35,8 +35,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.scoresToDataPoints = exports.toMetricDataPoint = exports.sendMetric = void 0;
 const httpm = __importStar(__nccwpck_require__(255));
+const core = __importStar(__nccwpck_require__(186));
 const lodash_get_1 = __importDefault(__nccwpck_require__(197));
 const _http = new httpm.HttpClient('lighthouse-datadog-report');
+const datadogHost = core.getInput('datadog-host', { required: true });
+const datadogApiKey = core.getInput('datadog-api-key', { required: true });
+core.setSecret(datadogApiKey);
 const METRIC_SCORE_MAP = {
     // General scores
     performance: 'categories.performance.score',
@@ -54,8 +58,8 @@ const METRIC_SCORE_MAP = {
     server_response_time: 'audits["server-response-time"].numericValue',
 };
 const sendMetric = (data) => {
-    return _http.postJson(`${process.env.INPUT_DATADOG_HOST}/api/v1/series`, data, {
-        'DD-API-KEY': process.env.INPUT_DATADOG_API_KEY,
+    return _http.postJson(`${datadogHost}/api/v1/series`, data, {
+        'DD-API-KEY': datadogApiKey,
     });
 };
 exports.sendMetric = sendMetric;
@@ -133,7 +137,7 @@ const core = __importStar(__nccwpck_require__(186));
 const main_1 = __nccwpck_require__(109);
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const metricNamespace = core.getInput('metric-namespace');
+        const metricNamespace = core.getInput('metric-namespace', { required: true });
         yield (0, main_1.main)(metricNamespace);
     }
     catch (error) {
@@ -184,6 +188,29 @@ exports.main = main;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -195,11 +222,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.parseResults = exports.extractReportFileNames = void 0;
+const core = __importStar(__nccwpck_require__(186));
 const fs_1 = __nccwpck_require__(147);
 const datadogUtils_1 = __nccwpck_require__(731);
+const resultsPath = core.getInput('results-path');
 const JSON_REPORT_FILENAME_REGEXP = /lhr-\d+\.json$/;
 const extractReportFileNames = () => __awaiter(void 0, void 0, void 0, function* () {
-    const allReports = yield fs_1.promises.readdir(process.env.INPUT_RESULTS_PATH);
+    const allReports = yield fs_1.promises.readdir(resultsPath);
     const jsonReports = allReports.filter((fileName) => {
         return JSON_REPORT_FILENAME_REGEXP.test(fileName);
     });
@@ -208,7 +237,7 @@ const extractReportFileNames = () => __awaiter(void 0, void 0, void 0, function*
 exports.extractReportFileNames = extractReportFileNames;
 const parseResults = (fileName) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const filePath = `${process.env.INPUT_RESULTS_PATH}/${fileName}`;
+    const filePath = `${resultsPath}/${fileName}`;
     const report = yield fs_1.promises.readFile(filePath, 'utf8');
     const reportTimeStamp = (_a = fileName.match(/\d+/)) === null || _a === void 0 ? void 0 : _a[0];
     const rawTimeStamp = reportTimeStamp
