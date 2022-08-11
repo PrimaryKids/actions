@@ -22,8 +22,8 @@ const METRIC_SCORE_MAP = {
 }
 
 export const sendMetric = (data: MetricData) => {
-  return _http.postJson(`${process.env.INPUT_DATADOG_HOST}/api/v1/series`, data, {
-    'DD-API-KEY': process.env.INPUT_DATADOG_API_KEY as string,
+  return _http.postJson(`${process.env['INPUT-DATADOG-HOST']}/api/v1/series`, data, {
+    'DD-API-KEY': process.env['INPUT-DATADOG-API-KEY'] as string,
   })
 }
 
