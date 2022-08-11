@@ -1,0 +1,19 @@
+name: Report Lighthouse results to Datadog
+description: Parses the Lighthouse audit results and sends namespaced metrics to Datadog
+inputs:
+  metric-namespace:
+    description: Metric namespace to use for reporting
+    required: true
+  datadog-host:
+    description: The host to send the metrics to
+    required: true
+  datadog-api-key:
+    description: The API key to use for sending the metrics to Datadog
+    required: true
+  results-path:
+    description: The path to the directory with the Lighthouse results
+    required: false
+    default: ./.lighthouseci
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
